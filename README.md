@@ -56,5 +56,5 @@ Opens the ESP-IDF `menuconfig` interface inside the container.
 
 ### License
 
-Source code is under the chosen project license (MIT, Apache 2.0, etc.).
 ESP-IDF and its toolchain remain licensed by Espressif.
+Do whatever you want with this template
