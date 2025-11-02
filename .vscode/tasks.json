@@ -1,28 +1,24 @@
 {
   "version": "2.0.0",
-  "options": {
-    "shell": { "executable": "/bin/bash", "args": ["-lc"] }
-  },
+  "options": { "shell": { "executable": "/bin/bash", "args": ["-lc"] } },
   "inputs": [
     {
       "id": "serialPort",
       "type": "promptString",
       "description": "Enter the ESP32-S3 serial port (e.g. /dev/ttyUSB0 or /dev/ttyACM0)",
-      "default": "/dev/ttyACM0"
+      "default": "/dev/ttyUSB0"
     }
   ],
   "tasks": [
     {
-      "label": "ESP: Configure + Menuconfig (Podman, S3)",
+      "label": "ESP: One-time init (set-target + defconfig)",
       "type": "shell",
-      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
-      "command": "podman run --rm -it -e TERM=xterm-256color -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py set-target esp32s3 && idf.py -B build menuconfig && cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && ninja -C build -t recompact'",
+      "command": "PORT='${input:serialPort}'; if [ -z \"$PORT\" ]; then PORT=$(ls -1 /dev/serial/by-id/* 2>/dev/null | head -n1 || true); [ -z \"$PORT\" ] && PORT=$(ls -1 /dev/ttyACM* /dev/ttyUSB* 2>/dev/null | head -n1 || true); fi; echo Using serial port: ${PORT:?no serial port found}; podman run --rm -it --userns=keep-id --group-add keep-groups --device=\"$PORT\" --privileged --security-opt label=disable -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p '\"$PORT\"' flash'",
       "problemMatcher": []
     },
     {
       "label": "ESP: Build (Podman)",
       "type": "shell",
-      "dependsOn": "ESP: Configure + Menuconfig (Podman, S3)",
       "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build build'",
       "problemMatcher": [
         {
@@ -40,6 +36,13 @@
       ]
     },
     {
+      "label": "ESP: Menuconfig (Podman)",
+      "type": "shell",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "command": "podman run --rm -it -e TERM=xterm-256color -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build menuconfig && cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'",
+      "problemMatcher": []
+    },
+    {
       "label": "ESP: Flash (Podman, choose port)",
       "type": "shell",
       "dependsOn": "ESP: Build (Podman)",
@@ -53,26 +56,15 @@
       "problemMatcher": []
     },
     {
-      "label": "ESP: Clean (Podman)",
+      "label": "ESP: Clean (keep sdkconfig)",
+      "type": "shell",
+      "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build clean && rm -rf build/CMakeFiles build/CMakeCache.txt'",
+      "problemMatcher": []
+    },
+    {
+      "label": "ESP: Distclean (removes sdkconfig!)",
       "type": "shell",
       "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build fullclean && rm -rf build'",
-      "problemMatcher": []
-    },
-
-    // (Optional) run menuconfig again later without redoing set-target
-    {
-      "label": "ESP: Menuconfig (Podman)",
-      "type": "shell",
-      "presentation": { "reveal": "always", "panel": "dedicated" },
-      "command": "podman run --rm -it -e TERM=xterm-256color -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build menuconfig'",
-      "problemMatcher": []
-    },
-
-    // (Optional) write minimal config back to sdkconfig.defaults for sharing
-    {
-      "label": "ESP: Save defconfig (Podman)",
-      "type": "shell",
-      "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build save-defconfig'",
       "problemMatcher": []
     }
   ]
