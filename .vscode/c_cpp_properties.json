@@ -4,7 +4,7 @@
     {
       "name": "ESP-IDF via Podman (ESP32-S3)",
       "intelliSenseMode": "gcc-x64",
-      "compilerPath": "/usr/bin/clang",
+      "compilerPath": "/usr/bin/gcc",
       "compileCommands": "${workspaceFolder}/build/compile_commands.json",
       "cStandard": "c11",
       "cppStandard": "c++17",

@@ -8,21 +8,22 @@
       "id": "serialPort",
       "type": "promptString",
       "description": "Enter the ESP32-S3 serial port (e.g. /dev/ttyUSB0 or /dev/ttyACM0)",
-      "default": "/dev/ttyUSB0"
+      "default": "/dev/ttyACM0"
     }
   ],
   "tasks": [
     {
-      "label": "ESP: Configure (Podman, S3)",
+      "label": "ESP: Configure + Menuconfig (Podman, S3)",
       "type": "shell",
-      "command": "if command -v host-spawn >/dev/null 2>&1; then HS=host-spawn; else HS=; fi; $HS podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py set-target esp32s3 && cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && ninja -C build -t recompact'",
+      "presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+      "command": "podman run --rm -it -e TERM=xterm-256color -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py set-target esp32s3 && idf.py -B build menuconfig && cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && ninja -C build -t recompact'",
       "problemMatcher": []
     },
     {
       "label": "ESP: Build (Podman)",
       "type": "shell",
-      "dependsOn": "ESP: Configure (Podman, S3)",
-      "command": "if command -v host-spawn >/dev/null 2>&1; then HS=host-spawn; else HS=; fi; $HS podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build build'",
+      "dependsOn": "ESP: Configure + Menuconfig (Podman, S3)",
+      "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build build'",
       "problemMatcher": [
         {
           "owner": "cpp",
@@ -42,19 +43,36 @@
       "label": "ESP: Flash (Podman, choose port)",
       "type": "shell",
       "dependsOn": "ESP: Build (Podman)",
-      "command": "if command -v host-spawn >/dev/null 2>&1; then HS=host-spawn; else HS=; fi; $HS podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p ${input:serialPort} flash'",
+      "command": "podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p ${input:serialPort} flash'",
       "problemMatcher": []
     },
     {
       "label": "ESP: Monitor (Podman, choose port)",
       "type": "shell",
-      "command": "if command -v host-spawn >/dev/null 2>&1; then HS=host-spawn; else HS=; fi; $HS podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p ${input:serialPort} monitor'",
+      "command": "podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p ${input:serialPort} monitor'",
       "problemMatcher": []
     },
     {
       "label": "ESP: Clean (Podman)",
       "type": "shell",
-      "command": "if command -v host-spawn >/dev/null 2>&1; then HS=host-spawn; else HS=; fi; $HS podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build fullclean && rm -rf build'",
+      "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build fullclean && rm -rf build'",
+      "problemMatcher": []
+    },
+
+    // (Optional) run menuconfig again later without redoing set-target
+    {
+      "label": "ESP: Menuconfig (Podman)",
+      "type": "shell",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "command": "podman run --rm -it -e TERM=xterm-256color -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build menuconfig'",
+      "problemMatcher": []
+    },
+
+    // (Optional) write minimal config back to sdkconfig.defaults for sharing
+    {
+      "label": "ESP: Save defconfig (Podman)",
+      "type": "shell",
+      "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build save-defconfig'",
       "problemMatcher": []
     }
   ]

@@ -1,7 +1,6 @@
 {
   "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
-  "C_Cpp.intelliSenseEngine": "Default",
+  "C_Cpp.intelliSenseEngine": "default",
   "cmake.configureOnOpen": false,
   "cmake.buildDirectory": "${workspaceFolder}/build",
-  "cmake.showOptionsMovedNotification": false
 }

@@ -1,0 +1,23 @@
+[
+  {
+    "key": "ctrl+alt+b",
+    "command": "workbench.action.tasks.runTask",
+    "args": "ESP: Build (Podman)",
+    "when": "workspaceFolder == '${workspaceFolder}'"
+  },
+  {
+    "key": "ctrl+alt+f",
+    "command": "workbench.action.tasks.runTask",
+    "args": "ESP: Flash (Podman, choose port)"
+  },
+  {
+    "key": "ctrl+alt+m",
+    "command": "workbench.action.tasks.runTask",
+    "args": "ESP: Monitor (Podman, choose port)"
+  },
+  {
+    "key": "ctrl+alt+c",
+    "command": "workbench.action.tasks.runTask",
+    "args": "ESP: Clean (Podman)"
+  }
+]
