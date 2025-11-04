@@ -11,8 +11,7 @@
       "includePath": [
         "${workspaceFolder}/**",
         "${workspaceFolder}/build",
-        "${workspaceFolder}/build/config",
-        "/home/paella/.idf-sysroot/idf/components/**"
+        "${workspaceFolder}/build/config"
       ],
       "browse": {
         "path": [
