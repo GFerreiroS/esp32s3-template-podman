@@ -20,10 +20,6 @@ The setup is self-contained and reproducible. Once cloned, the project is ready 
 
 ---
 
-Got it — here are the **exact step-by-step instructions** you can include in your README for both options, written in the same direct, technical tone as the rest of your document:
-
----
-
 > **Note**
 > To create your own project from this template without pushing changes to the original repository:
 
