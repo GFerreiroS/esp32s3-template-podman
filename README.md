@@ -14,8 +14,43 @@ The setup is self-contained and reproducible. Once cloned, the project is ready 
 * No ESP-IDF installation required on the host.
 * All build and flash tasks execute in a Podman container.
 * IntelliSense configuration automatically generated.
-* Serial port detection on flash and monitor.
+* Serial port and IDF path managed through `.vscode/env.json`.
+* One-time setup script (`setup.sh` / `setup.ps1`) handles configuration.
 * Project-specific VS Code setup for consistent environments.
+
+---
+
+### Setup
+
+Run the setup script once to configure the environment.
+
+**Linux/macOS:**
+
+```bash
+./setup.sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+.\setup.ps1
+```
+
+Available flags:
+
+| Flag                    | Description                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| `-d, --device <port>`   | Sets the serial port (e.g. `/dev/ttyACM0` or `COM3`).                         |
+| `-m, --menu`            | Launches `menuconfig` inside the container.                                   |
+| `-l, --location <path>` | Mirrors ESP-IDF headers for IntelliSense and updates `c_cpp_properties.json`. |
+
+Example:
+
+```bash
+./setup.sh -d /dev/ttyACM0 -l ~/.idf-sysroot/idf -m
+```
+
+The script creates `.vscode/env.json` storing your configuration.
 
 ---
 
@@ -23,38 +58,50 @@ The setup is self-contained and reproducible. Once cloned, the project is ready 
 
 #### Build
 
-Runs a full containerized build and generates `build/compile_commands.json` for IntelliSense.
-
-**Task:**
 `ESP: Build (Podman)`
+
+Runs a full containerized build and generates `build/compile_commands.json` for IntelliSense.
 
 #### Flash
 
-Flashes the firmware to the connected ESP32-S3 board.
-If no port is entered, the task automatically detects `/dev/serial/by-id/*` or the first `/dev/ttyACM*`/`/dev/ttyUSB*`.
+`ESP: Flash (Podman)`
 
-**Task:**
-`ESP: Flash (Podman, choose port)`
+Flashes the firmware using the serial port defined in `.vscode/env.json`.
 
 #### Monitor
 
-Opens the serial monitor to view ESP-IDF log output.
+`ESP: Monitor (Podman)`
 
-**Task:**
-`ESP: Monitor (Podman, choose port)`
-
-Exit the monitor with `Ctrl+]`.
+Opens the serial monitor for ESP-IDF logs.
+Exit with `Ctrl+]`.
 
 #### Menuconfig
 
+`ESP: Menuconfig (Podman)`
+
 Opens the ESP-IDF `menuconfig` interface inside the container.
 
-**Task:**
-`ESP: Menuconfig (Podman)`
+#### Build + Flash + Monitor
+
+`ESP: Build+Flash+Monitor (Podman)`
+
+Builds, flashes and monitors in a single task.
+
+#### Clean
+
+`ESP: Clean (keep sdkconfig)`
+
+Cleans all compiled objects and artifacts. Is the same as ```idf.py clean```
+
+#### Distclean
+
+`ESP: Distclean (removes sdkconfig!)`
+
+Cleans everything related to the build including sdkconfig and sdkconfig.old. Is the same as ```idf.py distclean```
 
 ---
 
 ### License
 
 ESP-IDF and its toolchain remain licensed by Espressif.
-Do whatever you want with this template
+Do whatever you want with this template.

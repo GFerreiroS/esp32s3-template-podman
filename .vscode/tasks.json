@@ -71,7 +71,7 @@
     {
       "label": "ESP: Distclean (removes sdkconfig!)",
       "type": "shell",
-      "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build fullclean && rm -rf build'",
+      "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build distclean && rm -rf build'",
       "problemMatcher": []
     }
   ]
