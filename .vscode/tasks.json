@@ -1,21 +1,9 @@
 {
   "version": "2.0.0",
-  "options": { "shell": { "executable": "/bin/bash", "args": ["-lc"] } },
-  "inputs": [
-    {
-      "id": "serialPort",
-      "type": "promptString",
-      "description": "Enter the ESP32-S3 serial port (e.g. /dev/ttyUSB0 or /dev/ttyACM0)",
-      "default": "/dev/ttyUSB0"
-    }
-  ],
+  "options": {
+    "shell": { "executable": "/bin/bash", "args": ["-lc"] }
+  },
   "tasks": [
-    {
-      "label": "ESP: One-time init (set-target + defconfig)",
-      "type": "shell",
-      "command": "PORT='${input:serialPort}'; if [ -z \"$PORT\" ]; then PORT=$(ls -1 /dev/serial/by-id/* 2>/dev/null | head -n1 || true); [ -z \"$PORT\" ] && PORT=$(ls -1 /dev/ttyACM* /dev/ttyUSB* 2>/dev/null | head -n1 || true); fi; echo Using serial port: ${PORT:?no serial port found}; podman run --rm -it --userns=keep-id --group-add keep-groups --device=\"$PORT\" --privileged --security-opt label=disable -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p '\"$PORT\"' flash'",
-      "problemMatcher": []
-    },
     {
       "label": "ESP: Build (Podman)",
       "type": "shell",
@@ -43,22 +31,22 @@
       "problemMatcher": []
     },
     {
-      "label": "ESP: Flash (Podman, choose port)",
+      "label": "ESP: Flash (Podman)",
       "type": "shell",
       "dependsOn": "ESP: Build (Podman)",
-      "command": "podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p ${input:serialPort} flash'",
+      "command": "PORT=$(jq -r '.serialPort // empty' .vscode/env.json 2>/dev/null || true); if [ -z \"$PORT\" ]; then echo 'Serial port not configured. Run ./setup.sh -d <port>'; exit 1; fi; echo Using port: $PORT; podman run --rm -it --device=\"$PORT\" --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p '\"$PORT\"' flash'",
       "problemMatcher": []
     },
     {
-      "label": "ESP: Monitor (Podman, choose port)",
+      "label": "ESP: Monitor (Podman)",
       "type": "shell",
-      "command": "podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p ${input:serialPort} monitor'",
+      "command": "PORT=$(jq -r '.serialPort // empty' .vscode/env.json 2>/dev/null || true); if [ -z \"$PORT\" ]; then echo 'Serial port not configured. Run ./setup.sh -d <port>'; exit 1; fi; echo Using port: $PORT; podman run --rm -it --device=\"$PORT\" --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build -p '\"$PORT\"' monitor'",
       "problemMatcher": []
     },
     {
-      "label": "ESP: Build+Flash+Monitor (Podman, auto port)",
+      "label": "ESP: Build+Flash+Monitor (Podman)",
       "type": "shell",
-      "command": "podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build build && idf.py -B build -p ${input:serialPort} flash monitor'",
+      "command": "PORT=$(jq -r '.serialPort // empty' .vscode/env.json 2>/dev/null || true); if [ -z \"$PORT\" ]; then echo 'Serial port not configured. Run ./setup.sh -d <port>'; exit 1; fi; echo Using port: $PORT; podman run --rm -it --device=\"$PORT\" --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build build && idf.py -B build -p '\"$PORT\"' flash monitor'",
       "problemMatcher": [
         {
           "owner": "cpp",
