@@ -56,6 +56,25 @@
       "problemMatcher": []
     },
     {
+      "label": "ESP: Build+Flash+Monitor (Podman, auto port)",
+      "type": "shell",
+      "command": "podman run --rm -it --device=${input:serialPort} --privileged -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build build && idf.py -B build -p ${input:serialPort} flash monitor'",
+      "problemMatcher": [
+        {
+          "owner": "cpp",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": {
+            "regexp": "^([^:\\s][^:]*):(\\d+):(\\d+):\\s+(warning|error|note):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+          }
+        }
+      ]
+    },
+    {
       "label": "ESP: Clean (keep sdkconfig)",
       "type": "shell",
       "command": "podman run --rm -it -v ${workspaceFolder}:/work:z -v ${userHome}/.espressif:/root/.espressif:z -w /work espressif/idf:latest bash -lc 'idf.py -B build clean && rm -rf build/CMakeFiles build/CMakeCache.txt'",
