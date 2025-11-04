@@ -109,7 +109,7 @@ echo "[*] Saved configuration to $ENV_FILE"
 # --- SDKCONFIG INIT --------------------------------------------------------
 echo "[*] Generating sdkconfig..."
 podman run --rm -it -v "$WORKDIR":/work:z -v "$HOME/.espressif":/root/.espressif:z \
-  -w /work espressif/idf:latest bash -lc "idf.py set-target esp32s3 && idf.py -B build defconfig"
+  -w /work espressif/idf:latest bash -lc "idf.py set-target esp32s3"
 
 # --- Menuconfig ------------------------------------------------------------
 if [[ "$MENUCONFIRM" =~ ^[Yy]$ ]]; then
