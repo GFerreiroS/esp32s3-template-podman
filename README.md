@@ -20,6 +20,49 @@ The setup is self-contained and reproducible. Once cloned, the project is ready 
 
 ---
 
+Got it — here are the **exact step-by-step instructions** you can include in your README for both options, written in the same direct, technical tone as the rest of your document:
+
+---
+
+> **Note**
+> To create your own project from this template without pushing changes to the original repository:
+
+**Option 1 — Use this template (recommended)**
+
+1. On GitHub, click **“Use this template” → “Create a new repository”**.
+2. Choose a name for your new project and create it under your account.
+3. Clone your new repository:
+
+   ```bash
+   git clone https://github.com/<your-username>/<your-project>.git
+   cd <your-project>
+   ```
+4. Run the setup script to initialize the environment:
+
+   ```bash
+   ./setup.sh -d /dev/ttyACM0
+   ```
+
+**Option 2 — Fork this repository manually**
+
+1. Fork this repository on GitHub.
+2. Clone your fork instead of the original:
+
+   ```bash
+   git clone https://github.com/<your-username>/<your-fork>.git
+   cd <your-fork>
+   ```
+3. Run the setup script to configure your environment:
+
+   ```bash
+   ./setup.sh
+   ```
+
+Both methods give you a fully independent project with its own Git history and remote origin.
+
+
+---
+
 ### Setup
 
 Run the setup script once to configure the environment.
