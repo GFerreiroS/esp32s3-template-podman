@@ -7,7 +7,7 @@ $VSDir = "$WorkDir\.vscode"
 $EnvFile = "$VSDir\env.json"
 $CCPPFile = "$VSDir\c_cpp_properties.json"
 
-if ((docker ps 2>&1) -match '^(?!error)'){
+if ((docker ps 2>&1) -match 'error'){
     Write-Error "Docker does not appear to be running. Please start Docker and try again."
     exit 1
 }
