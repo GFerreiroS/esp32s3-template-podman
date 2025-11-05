@@ -7,6 +7,11 @@ $VSDir = "$WorkDir\.vscode"
 $EnvFile = "$VSDir\env.json"
 $CCPPFile = "$VSDir\c_cpp_properties.json"
 
+if ((docker ps 2>&1) -match '^(?!error)'){
+    Write-Error "Docker does not appear to be running. Please start Docker and try again."
+    exit 1
+}
+
 if (-not (Test-Path $VSDir)) { New-Item -ItemType Directory -Force -Path $VSDir | Out-Null }
 
 Write-Host "=== ESP32-S3 Project Setup ===`n"
@@ -38,8 +43,8 @@ if ($Intelli -match "^[Yy]$") {
     if (-not (Test-Path $HeaderParent)) { New-Item -ItemType Directory -Force -Path $HeaderParent | Out-Null }
 
     Write-Host "`n[*] Syncing ESP-IDF headers to $HeaderPath ...`n"
-    podman run --rm -it `
-        -v "$HeaderParent:/host-idf:z" `
+    docker run --rm -it `
+        -v "${HeaderParent}:/host-idf:z" `
         espressif/idf:latest `
         bash -lc "rm -rf /host-idf/idf && cp -a /opt/esp/idf /host-idf/"
     Write-Host "[*] Header mirror complete.`n"
@@ -73,17 +78,17 @@ if (($Intelli -match "^[Yy]$") -and (Test-Path $CCPPFile)) {
 
 # 6) Create sdkconfig from defaults
 Write-Host "[*] Generating sdkconfig..."
-podman run --rm -it `
-    -v "$WorkDir:/work:z" -v "$HOME/.espressif:/root/.espressif:z" `
+docker run --rm -it `
+    -v "${WorkDir}:/work:z" -v "$HOME/.espressif:/root/.espressif:z" `
     -w /work espressif/idf:latest `
-    bash -lc "idf.py set-target esp32s3 && idf.py -B build defconfig"
+    bash -lc "idf.py set-target esp32s3"
 
 # 7) Optionally open menuconfig
 if ($Menu -match "^[Yy]$") {
     Write-Host "[*] Launching menuconfig..."
-    podman run --rm -it `
+    docker run --rm -it `
         -e TERM=xterm-256color `
-        -v "$WorkDir:/work:z" -v "$HOME/.espressif:/root/.espressif:z" `
+        -v "${WorkDir}:/work:z" -v "$HOME/.espressif:/root/.espressif:z" `
         -w /work espressif/idf:latest `
         bash -lc "idf.py -B build menuconfig"
 }
