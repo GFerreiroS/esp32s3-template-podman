@@ -9,6 +9,9 @@ The setup is self-contained and reproducible. Once cloned, the project is ready 
 
 ---
 
+>[!WARNING]
+> Windows setup will have limited support as I dont use it for developing. Feel free to contribute. 
+
 ### Features
 
 * No ESP-IDF installation required on the host.
@@ -20,7 +23,8 @@ The setup is self-contained and reproducible. Once cloned, the project is ready 
 
 ---
 
-> **Note**
+> [!NOTE]
+>
 > To create your own project from this template without pushing changes to the original repository:
 
 **Option 1 — Use this template (recommended)**
@@ -137,6 +141,62 @@ Cleans all compiled objects and artifacts. Is the same as ```idf.py clean```
 `ESP: Distclean (removes sdkconfig!)`
 
 Cleans everything related to the build including sdkconfig and sdkconfig.old. Is the same as ```idf.py distclean```
+
+---
+
+## Contributing
+
+This repository serves as a **template** for developing ESP32-S3 firmware in a reproducible containerized environment (Podman + VS Code).
+All contributions that improve the workflow, documentation, or tooling are welcome.
+
+---
+
+### Contributing
+
+If you find any issue or want to suggest improvements, open an Issue before starting to work on it.
+
+1. **Fork the repository**
+   Click the **Fork** button at the top right of the [main repository page](https://github.com/GFerreiroS/esp32s3-template-podman).
+
+2. **Clone your fork**
+
+   ```bash
+   git clone https://github.com/<your-username>/esp32s3-template-podman.git
+   cd esp32s3-template-podman
+   ```
+
+3. **Create a new branch**
+
+   ```bash
+   git checkout -b my-improvement
+   ```
+
+4. **Make your changes**
+
+   * Update documentation or add new features.
+   * Ensure that your code follows the existing style and structure.
+
+5. **Test your changes**
+
+6. **Commit and push**
+
+   ```bash
+   git add .
+   git commit -m "feat: add my improvement"
+   git push origin my-improvement
+   ```
+
+7. **Open a Pull Request**
+
+   * Go to your fork on GitHub.
+   * Click **“Compare & pull request”**.
+   * Provide a clear description of what your changes do and why.
+
+### Guidelines
+
+* Update documentation if your change affects how the template is used.
+* Avoid committing build artifacts or personal environment files.
+* Update the README if your change affects usage or setup.
 
 ---
 
