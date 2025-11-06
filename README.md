@@ -10,7 +10,7 @@ The setup is self-contained and reproducible. Once cloned, the project is ready 
 ---
 
 >[!WARNING]
-> Windows setup will have limited support as I dont use it for developing. Feel free to contribute. 
+> Windows/MacOS setup will have limited support as I dont use it for developing. Feel free to contribute. 
 
 ### Features
 
@@ -203,4 +203,5 @@ If you find any issue or want to suggest improvements, open an Issue before star
 ### License
 
 ESP-IDF and its toolchain remain licensed by Espressif.
+
 Do whatever you want with this template.
