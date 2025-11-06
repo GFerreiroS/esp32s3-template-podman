@@ -7,6 +7,7 @@ ENV_FILE="$VSCODE_DIR/env.json"
 CCPP_FILE="$VSCODE_DIR/c_cpp_properties.json"
 
 mkdir -p "$VSCODE_DIR"
+mkdir -p "$HOME/.espressif"
 
 usage() {
   echo "Usage: $0 [-d|--device] [PORT] [-m|--menu] [-l|--location PATH]"
